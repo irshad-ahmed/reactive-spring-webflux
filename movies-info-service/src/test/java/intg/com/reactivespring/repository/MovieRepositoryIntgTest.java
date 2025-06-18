@@ -50,7 +50,7 @@ class MovieRepositoryIntgTest {
     }
 
     @Test
-    void findByIdMovies() {
+    void findMoviesById() {
         //given
         //when
         var movieMono = movieRepository.findById("123").log();

@@ -10,9 +10,13 @@ import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWeb
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.util.List;
+
+import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.Mockito.when;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -41,6 +45,7 @@ public class MovieControllerIntgTest {
     void tearDown() {
         movieRepository.deleteAll().block();
     }
+
     @Test
     public void addMovie() {
         //given
@@ -82,8 +87,8 @@ public class MovieControllerIntgTest {
 
     @Test
     void getMovieById() {
-        String movieId="123";
-        webTestClient.get().uri(MOVIES_URI+"/{id}",movieId)
+        String movieId = "123";
+        webTestClient.get().uri(MOVIES_URI + "/{id}", movieId)
                 .exchange()
                 .expectStatus()
                 .is2xxSuccessful()
@@ -102,13 +107,24 @@ public class MovieControllerIntgTest {
     }
 
     @Test
+    void findMoviesByIdNotFound() {
+        String movieId = "1";
+
+        webTestClient.get().uri(MOVIES_URI + "/{id}", movieId)
+                .exchange()
+                .expectStatus()
+                .isNotFound();
+
+    }
+
+    @Test
     public void updateMovie() {
         //given
         var movie = new Movie(null, "Batman Begins", "Description 2", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018);
 
         //when
-        String movieId="123";
-        webTestClient.put().uri(MOVIES_URI+"/{id}",movieId)
+        String movieId = "123";
+        webTestClient.put().uri(MOVIES_URI + "/{id}", movieId)
                 .bodyValue(movie)
                 .exchange()
                 .expectStatus()
@@ -123,13 +139,26 @@ public class MovieControllerIntgTest {
                     assert savedMovie.getCast().contains("Christian Bale");
                     assert savedMovie.getYear().equals(2018);
                 });
-        //then
+    }
+
+    @Test
+    public void whenUpdateMovieWhichIsNotPresent() {
+        //given
+        var movie = new Movie(null, "Batman Begins", "Description 2", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018);
+
+        //when
+        String movieId = "abc";
+        webTestClient.put().uri(MOVIES_URI + "/{id}", movieId)
+                .bodyValue(movie)
+                .exchange()
+                .expectStatus()
+                .isNotFound();
     }
 
     @Test
     public void deleteMovie() {
-        String movieId="123";
-        webTestClient.delete().uri(MOVIES_URI+"/{id}",movieId)
+        String movieId = "123";
+        webTestClient.delete().uri(MOVIES_URI + "/{id}", movieId)
                 .exchange()
                 .expectStatus()
                 .isNoContent();
