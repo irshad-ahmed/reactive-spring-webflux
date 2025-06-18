@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static com.reactivespring.controller.MovieControllerIntgTest.MOVIES_URI;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.when;
 
@@ -33,9 +34,9 @@ public class MovieControllerTest {
 
         when(movieServiceMock.getAllMovies())
                 .thenReturn(Flux.just(
-                        new Movie("1", "Batman", "Description 1", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1)),
-                        new Movie("2", "Mission Impossible", "Description 1", List.of("Actor 1", "Actor 2"), LocalDate.of(2025, 10, 1)),
-                        new Movie("3", "Harry Potter", "Description 1", List.of("Actor 1", "Actor 2"), LocalDate.of(2008, 10, 1))
+                        new Movie("1", "Batman", "Description 1", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018),
+                        new Movie("2", "Mission Impossible", "Description 1", List.of("Actor 1", "Actor 2"), LocalDate.of(2025, 10, 1), 2025),
+                        new Movie("3", "Harry Potter", "Description 1", List.of("Actor 1", "Actor 2"), LocalDate.of(2008, 10, 1), 2008)
                 ));
 
         webTestClient.get().uri(MOVIES_URI)
@@ -48,10 +49,11 @@ public class MovieControllerTest {
 
     @Test
     void getMovieById() {
+
         String movieId = "1";
         when(movieServiceMock.getMovieById(isA(String.class)))
                 .thenReturn(Mono.just(
-                        new Movie("1", "Batman", "Description 1", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1))
+                        new Movie("1", "Batman", "Description 1", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018)
                 ));
         webTestClient.get().uri(MOVIES_URI+"/{id}",movieId)
                 .exchange()
@@ -65,10 +67,10 @@ public class MovieControllerTest {
     @Test
     public void addMovie() {
         //given
-        var movie = new Movie(null, "Batman Begins", "Description 2", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1));
+        var movie = new Movie(null, "Batman Begins", "Description 2", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018);
         when(movieServiceMock.addMovie(isA(Movie.class)))
                 .thenReturn(Mono.just(
-                        new Movie("123", "Batman Begins", "Description 2", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1))
+                        new Movie("123", "Batman Begins", "Description 2", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018)
                 ));
 
         //when
@@ -85,17 +87,17 @@ public class MovieControllerTest {
                     assert savedMovie.getName().equals("Batman Begins");
                     assert savedMovie.getDescription().equals("Description 2");
                     assert savedMovie.getCast().contains("Christian Bale");
+                    assert savedMovie.getYear().equals(2018);
                 });
-        //then
     }
 
     @Test
     public void updateMovie() {
         //given
-        var movie = new Movie(null, "Batman Begins", "Description 2", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1));
+        var movie = new Movie(null, "Batman Begins", "Description 2", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018);
         when(movieServiceMock.updateMovie(isA(String.class), isA(Movie.class)))
                 .thenReturn(Mono.just(
-                        new Movie("123", "Batman Begins", "Description 2", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1))
+                        new Movie("123", "Batman Begins", "Description 2", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018)
                 ));
         //when
         String movieId="123";
@@ -112,8 +114,8 @@ public class MovieControllerTest {
                     assert savedMovie.getName().equals("Batman Begins");
                     assert savedMovie.getDescription().equals("Description 2");
                     assert savedMovie.getCast().contains("Christian Bale");
+                    assert savedMovie.getYear().equals(2018);
                 });
-        //then
     }
 
     @Test
@@ -126,6 +128,25 @@ public class MovieControllerTest {
                 .expectStatus()
                 .isNoContent();
 
+    }
+
+    @Test
+    public void whenAddingMovieMandatoryFieldsNeedsToBePresent() {
+        //given
+        var movie = new Movie(null, "", "Description 2", List.of(""), LocalDate.of(2018, 10, 1), -2018);
+        //when
+        webTestClient.post().uri(MOVIES_URI)
+                .bodyValue(movie)
+                .exchange()
+                .expectStatus()
+                .isBadRequest()
+                .expectBody(String.class)
+                .consumeWith(response -> {
+                    var responseBody = response.getResponseBody();
+                    System.out.println(responseBody);
+                    assert responseBody != null;
+                    assertEquals(responseBody,"Movie name must be provided,Year must be a positive number,cast must be present");
+                });
     }
 
 }

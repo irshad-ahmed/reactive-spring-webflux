@@ -35,6 +35,7 @@ public class MovieService {
                             movie.setDescription(newMovie.getDescription());
                             movie.setCast(newMovie.getCast());
                             movie.setReleaseDate(newMovie.getReleaseDate());
+                            movie.setYear(newMovie.getYear());
                             return movieRepository.save(movie);
                         }
                 );

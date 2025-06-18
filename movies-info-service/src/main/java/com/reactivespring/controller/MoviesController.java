@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/v1/movies")
 public class MoviesController {
@@ -20,7 +22,7 @@ public class MoviesController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<Movie> addMovie(@RequestBody Movie movie) {
+    public Mono<Movie> addMovie(@RequestBody @Valid Movie movie) {
         return movieService.addMovie(movie).log();
     }
 

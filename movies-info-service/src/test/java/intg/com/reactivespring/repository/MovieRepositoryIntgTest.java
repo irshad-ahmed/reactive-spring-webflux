@@ -25,9 +25,9 @@ class MovieRepositoryIntgTest {
     @BeforeEach
     void setUp() {
         var movieList = List.of(
-                new Movie(null, "Batman", "Description 1", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1)),
-                new Movie(null, "Mission Impossible", "Description 1", List.of("Actor 1", "Actor 2"), LocalDate.of(2025, 10, 1)),
-                new Movie("123", "Harry Potter", "Description 1", List.of("Actor 1", "Actor 2"), LocalDate.of(2008, 10, 1))
+                new Movie(null, "Batman", "Description 1", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018),
+                new Movie(null, "Mission Impossible", "Description 1", List.of("Actor 1", "Actor 2"), LocalDate.of(2025, 10, 1), 2025),
+                new Movie("123", "Harry Potter", "Description 1", List.of("Actor 1", "Actor 2"), LocalDate.of(2008, 10, 1), 2008)
         );
         movieRepository.saveAll(movieList).blockLast();
     }
@@ -62,6 +62,7 @@ class MovieRepositoryIntgTest {
                     assert movie.getDescription().equals("Description 1");
                     assert movie.getCast().contains("Actor 1");
                     assert movie.getReleaseDate().equals(LocalDate.of(2008, 10, 1));
+                    assertEquals(movie.getYear(), 2008);
                 })
                 .verifyComplete();
 
@@ -71,7 +72,7 @@ class MovieRepositoryIntgTest {
     void saveMovie() {
         //given
         //when
-        var movieMono = movieRepository.save(new Movie(null, "Batman", "Description 1", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1))).log();
+        var movieMono = movieRepository.save(new Movie(null, "Batman", "Description 1", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018)).log();
         //then
         StepVerifier.create(movieMono)
                 .assertNext(movie -> {
@@ -80,6 +81,7 @@ class MovieRepositoryIntgTest {
                     assert movie.getDescription().equals("Description 1");
                     assert movie.getCast().contains("Actor 2");
                     assert movie.getReleaseDate().equals(LocalDate.of(2018, 10, 1));
+                    assertEquals(movie.getYear(), 2018);
                 })
                 .verifyComplete();
 

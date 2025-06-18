@@ -30,9 +30,9 @@ public class MovieControllerIntgTest {
     @BeforeEach
     void setUp() {
         var movieList = List.of(
-                new Movie(null, "Batman", "Description 1", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1)),
-                new Movie(null, "Mission Impossible", "Description 1", List.of("Actor 1", "Actor 2"), LocalDate.of(2025, 10, 1)),
-                new Movie("123", "Harry Potter", "Description 1", List.of("Actor 1", "Actor 2"), LocalDate.of(2008, 10, 1))
+                new Movie(null, "Batman", "Description 1", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018),
+                new Movie(null, "Mission Impossible", "Description 1", List.of("Actor 1", "Actor 2"), LocalDate.of(2025, 10, 1), 2025),
+                new Movie("123", "Harry Potter", "Description 1", List.of("Actor 1", "Actor 2"), LocalDate.of(2008, 10, 1), 2008)
         );
         movieRepository.saveAll(movieList).blockLast();
     }
@@ -44,7 +44,7 @@ public class MovieControllerIntgTest {
     @Test
     public void addMovie() {
         //given
-        var movie = new Movie(null, "Batman Begins", "Description 2", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1));
+        var movie = new Movie(null, "Batman Begins", "Description 2", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018);
 
         //when
         webTestClient.post().uri(MOVIES_URI)
@@ -60,6 +60,7 @@ public class MovieControllerIntgTest {
                     assert savedMovie.getName().equals("Batman Begins");
                     assert savedMovie.getDescription().equals("Description 2");
                     assert savedMovie.getCast().contains("Christian Bale");
+                    assert savedMovie.getYear().equals(2018);
                 });
         //then
     }
@@ -103,7 +104,7 @@ public class MovieControllerIntgTest {
     @Test
     public void updateMovie() {
         //given
-        var movie = new Movie(null, "Batman Begins", "Description 2", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1));
+        var movie = new Movie(null, "Batman Begins", "Description 2", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018);
 
         //when
         String movieId="123";
@@ -120,6 +121,7 @@ public class MovieControllerIntgTest {
                     assert savedMovie.getName().equals("Batman Begins");
                     assert savedMovie.getDescription().equals("Description 2");
                     assert savedMovie.getCast().contains("Christian Bale");
+                    assert savedMovie.getYear().equals(2018);
                 });
         //then
     }
