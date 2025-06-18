@@ -1,5 +1,22 @@
 # reactive-spring-webflux
-Spring Webflux
+
+## Starting MongoDB with Docker
+
+You can start a local MongoDB instance using Docker with the following command:
+
+```
+docker run --name mongodb -d -p 27017:27017 -v mongodb_data:/data/db mongo:latest
+```
+
+- This will run MongoDB on port 27017.
+
+To stop and remove the container:
+
+```
+docker stop mongodb && docker rm mongodb
+```
+
+## Spring Webflux
 
 #### Install Mongo DB in MAC
 
