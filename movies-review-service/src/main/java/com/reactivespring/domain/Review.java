@@ -17,7 +17,7 @@ public class Review {
 
     @Id
     private String reviewId;
-    private Long movieInfoId;
+    private String movieId;
     private String comment;
     //@Min(value = 0L, message = "rating.negative : please pass a non-negative value")
     private Double rating;
