@@ -2,6 +2,7 @@ package com.reactivespring.controller;
 
 import com.reactivespring.domain.Movie;
 import com.reactivespring.service.MovieService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/v1/movies")
+@Slf4j
 public class MoviesController {
     @Autowired
     MovieService movieService;
@@ -28,7 +30,15 @@ public class MoviesController {
     }
 
     @GetMapping
-    public Flux<Movie> getAllMovies() {
+    public Flux<Movie> getAllMovies(@RequestParam(value = "year", required = false) Integer year,
+                                    @RequestParam(value = "name", required = false) String name) {
+        log.info("Year is : {}", year);
+        if (name != null) {
+            return movieService.getMoviesByName(name);
+        }
+        if (year != null) {
+            return movieService.getMoviesByYear(year);
+        }
         return movieService.getAllMovies().log();
     }
 
@@ -45,7 +55,7 @@ public class MoviesController {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<ResponseEntity<Movie>> updateMovieById(@PathVariable String id, @RequestBody Movie newMovie) {
-        return movieService.updateMovie(id,newMovie)
+        return movieService.updateMovie(id, newMovie)
                 .map(movie -> {
                     return ResponseEntity.ok().body(movie);
                 })

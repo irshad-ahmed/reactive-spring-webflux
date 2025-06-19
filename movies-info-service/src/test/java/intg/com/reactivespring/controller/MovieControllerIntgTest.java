@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWeb
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
@@ -82,6 +83,40 @@ public class MovieControllerIntgTest {
                 .is2xxSuccessful()
                 .expectBodyList(Movie.class)
                 .hasSize(3);
+        //then
+    }
+
+    @Test
+    public void getAllMovieByYear() {
+        //given
+        //var movie = new Movie(null, "Batman Begins", "Description 2", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1));
+        var uri = UriComponentsBuilder.fromUriString(MOVIES_URI)
+                .queryParam("year", 2018)
+                .buildAndExpand().toUri();
+        //when
+        webTestClient.get().uri(uri)
+                .exchange()
+                .expectStatus()
+                .is2xxSuccessful()
+                .expectBodyList(Movie.class)
+                .hasSize(1);
+        //then
+    }
+
+    @Test
+    public void getAllMovieByName() {
+        //given
+        //var movie = new Movie(null, "Batman Begins", "Description 2", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1));
+        var uri = UriComponentsBuilder.fromUriString(MOVIES_URI)
+                .queryParam("name", "Harry Potter")
+                .buildAndExpand().toUri();
+        //when
+        webTestClient.get().uri(uri)
+                .exchange()
+                .expectStatus()
+                .is2xxSuccessful()
+                .expectBodyList(Movie.class)
+                .hasSize(1);
         //then
     }
 

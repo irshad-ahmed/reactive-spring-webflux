@@ -122,4 +122,34 @@ class MovieRepositoryIntgTest {
 
     }
 
+    @Test
+    void findByYear() {
+        //given
+
+        //when
+        var allMoviesIn2025 = movieRepository.findByYear(2025).log();
+
+       // var allMovies = movieRepository.findAll().log();
+        //then
+        StepVerifier.create(allMoviesIn2025)
+                .expectNextCount(1)
+                .verifyComplete();
+
+    }
+
+    @Test
+    void findByName() {
+        //given
+
+        //when
+        var allMoviesIn2025 = movieRepository.findByName("Mission Impossible").log();
+
+        // var allMovies = movieRepository.findAll().log();
+        //then
+        StepVerifier.create(allMoviesIn2025)
+                .expectNextCount(1)
+                .verifyComplete();
+
+    }
+
 }
