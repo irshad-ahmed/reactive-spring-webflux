@@ -1,6 +1,6 @@
 package com.reactivespring.repository;
 
-import com.reactivespring.domain.Movie;
+import com.reactivespring.domain.MovieInfo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,9 +25,9 @@ class MovieRepositoryIntgTest {
     @BeforeEach
     void setUp() {
         var movieList = List.of(
-                new Movie(null, "Batman", "Description 1", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018),
-                new Movie(null, "Mission Impossible", "Description 1", List.of("Actor 1", "Actor 2"), LocalDate.of(2025, 10, 1), 2025),
-                new Movie("123", "Harry Potter", "Description 1", List.of("Actor 1", "Actor 2"), LocalDate.of(2008, 10, 1), 2008)
+                new MovieInfo(null, "Batman", "Description 1", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018),
+                new MovieInfo(null, "Mission Impossible", "Description 1", List.of("Actor 1", "Actor 2"), LocalDate.of(2025, 10, 1), 2025),
+                new MovieInfo("123", "Harry Potter", "Description 1", List.of("Actor 1", "Actor 2"), LocalDate.of(2008, 10, 1), 2008)
         );
         movieRepository.saveAll(movieList).blockLast();
     }
@@ -72,7 +72,7 @@ class MovieRepositoryIntgTest {
     void saveMovie() {
         //given
         //when
-        var movieMono = movieRepository.save(new Movie(null, "Batman", "Description 1", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018)).log();
+        var movieMono = movieRepository.save(new MovieInfo(null, "Batman", "Description 1", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018)).log();
         //then
         StepVerifier.create(movieMono)
                 .assertNext(movie -> {

@@ -17,14 +17,14 @@ import java.util.List;
 @AllArgsConstructor
 @Validated
 public class MovieInfo {
-    private String movieInfoId;
-    @NotBlank(message = "movieInfo.name must be present")
+    private String movieId;
+    @NotBlank(message = "Movie name must be provided")
     private String name;
-    @NotNull
-    @Positive(message = "movieInfo.year must be a Positive Value")
-    private Integer year;
 
-    @NotNull
-    private List<@NotBlank(message = "movieInfo.cast must be present") String> cast;
-    private LocalDate release_date;
+    private List<@NotBlank(message = "cast must be present") String> cast;
+
+    private LocalDate releaseDate;
+
+    @Positive(message = "Year must be a positive number")
+    private Integer year;
 }

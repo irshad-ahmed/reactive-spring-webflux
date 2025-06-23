@@ -1,6 +1,6 @@
 package com.reactivespring.service;
 
-import com.reactivespring.domain.Movie;
+import com.reactivespring.domain.MovieInfo;
 import com.reactivespring.repository.MovieRepository;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -15,19 +15,19 @@ public class MovieService {
         this.movieRepository = movieRepository;
     }
 
-    public Mono<Movie> addMovie(Movie movie) {
+    public Mono<MovieInfo> addMovie(MovieInfo movie) {
         return movieRepository.save(movie);
     }
 
-    public Flux<Movie> getAllMovies() {
+    public Flux<MovieInfo> getAllMovies() {
         return movieRepository.findAll();
     }
 
-    public Mono<Movie> getMovieById(String id) {
+    public Mono<MovieInfo> getMovieById(String id) {
         return movieRepository.findById(id);
     }
 
-    public Mono<Movie> updateMovie(String id, Movie newMovie) {
+    public Mono<MovieInfo> updateMovie(String id, MovieInfo newMovie) {
         return movieRepository.findById(id)
                 .flatMap(
                         movie -> {
@@ -45,11 +45,11 @@ public class MovieService {
         return movieRepository.deleteById(id);
     }
 
-    public Flux<Movie> getMoviesByYear(Integer year) {
+    public Flux<MovieInfo> getMoviesByYear(Integer year) {
         return movieRepository.findByYear(year);
     }
 
-    public Flux<Movie> getMoviesByName(String name) {
+    public Flux<MovieInfo> getMoviesByName(String name) {
         return  movieRepository.findByName(name);
     }
 }

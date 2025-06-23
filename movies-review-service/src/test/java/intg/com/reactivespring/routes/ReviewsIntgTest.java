@@ -85,7 +85,7 @@ public class ReviewsIntgTest {
     @Test
     void updateReview() {
         //given
-        var updatedReview = new Review("456", "123", "Updated comment", 4.0);
+        var updatedReview = new Review("456", "789", "Updated comment", 4.0);
 
         //when
         webTestClient
@@ -100,7 +100,7 @@ public class ReviewsIntgTest {
                     var review = reviewEntityExchangeResult.getResponseBody();
                     assert review != null;
                     assert review.getReviewId().equals("456");
-                    assert review.getMovieId().equals("123");
+                    assert review.getMovieId().equals("789");
                     assert review.getComment().equals("Updated comment");
                     assert review.getRating() == 4.0;
                 });

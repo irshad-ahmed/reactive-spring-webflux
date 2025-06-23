@@ -1,0 +1,6 @@
+spring:
+  profiles:
+    active:
+      - local
+restClient:
+  moviesInfoURL: http://localhost:${wiremock.server.port}/movies-info

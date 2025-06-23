@@ -1,6 +1,6 @@
 package com.reactivespring.controller;
 
-import com.reactivespring.domain.Movie;
+import com.reactivespring.domain.MovieInfo;
 import com.reactivespring.repository.MovieRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,13 +11,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.util.UriComponentsBuilder;
-import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.util.List;
-
-import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.Mockito.when;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -35,9 +31,9 @@ public class MovieControllerIntgTest {
     @BeforeEach
     void setUp() {
         var movieList = List.of(
-                new Movie(null, "Batman", "Description 1", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018),
-                new Movie(null, "Mission Impossible", "Description 1", List.of("Actor 1", "Actor 2"), LocalDate.of(2025, 10, 1), 2025),
-                new Movie("123", "Harry Potter", "Description 1", List.of("Actor 1", "Actor 2"), LocalDate.of(2008, 10, 1), 2008)
+                new MovieInfo(null, "Batman", "Description 1", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018),
+                new MovieInfo(null, "Mission Impossible", "Description 1", List.of("Actor 1", "Actor 2"), LocalDate.of(2025, 10, 1), 2025),
+                new MovieInfo("123", "Harry Potter", "Description 1", List.of("Actor 1", "Actor 2"), LocalDate.of(2008, 10, 1), 2008)
         );
         movieRepository.saveAll(movieList).blockLast();
     }
@@ -50,7 +46,7 @@ public class MovieControllerIntgTest {
     @Test
     public void addMovie() {
         //given
-        var movie = new Movie(null, "Batman Begins", "Description 2", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018);
+        var movie = new MovieInfo(null, "Batman Begins", "Description 2", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018);
 
         //when
         webTestClient.post().uri(MOVIES_URI)
@@ -58,7 +54,7 @@ public class MovieControllerIntgTest {
                 .exchange()
                 .expectStatus()
                 .isCreated()
-                .expectBody(Movie.class)
+                .expectBody(MovieInfo.class)
                 .consumeWith(response -> {
                     var savedMovie = response.getResponseBody();
                     assert savedMovie != null;
@@ -81,7 +77,7 @@ public class MovieControllerIntgTest {
                 .exchange()
                 .expectStatus()
                 .is2xxSuccessful()
-                .expectBodyList(Movie.class)
+                .expectBodyList(MovieInfo.class)
                 .hasSize(3);
         //then
     }
@@ -98,7 +94,7 @@ public class MovieControllerIntgTest {
                 .exchange()
                 .expectStatus()
                 .is2xxSuccessful()
-                .expectBodyList(Movie.class)
+                .expectBodyList(MovieInfo.class)
                 .hasSize(1);
         //then
     }
@@ -115,7 +111,7 @@ public class MovieControllerIntgTest {
                 .exchange()
                 .expectStatus()
                 .is2xxSuccessful()
-                .expectBodyList(Movie.class)
+                .expectBodyList(MovieInfo.class)
                 .hasSize(1);
         //then
     }
@@ -155,7 +151,7 @@ public class MovieControllerIntgTest {
     @Test
     public void updateMovie() {
         //given
-        var movie = new Movie(null, "Batman Begins", "Description 2", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018);
+        var movie = new MovieInfo(null, "Batman Begins", "Description 2", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018);
 
         //when
         String movieId = "123";
@@ -164,7 +160,7 @@ public class MovieControllerIntgTest {
                 .exchange()
                 .expectStatus()
                 .is2xxSuccessful()
-                .expectBody(Movie.class)
+                .expectBody(MovieInfo.class)
                 .consumeWith(response -> {
                     var savedMovie = response.getResponseBody();
                     assert savedMovie != null;
@@ -179,7 +175,7 @@ public class MovieControllerIntgTest {
     @Test
     public void whenUpdateMovieWhichIsNotPresent() {
         //given
-        var movie = new Movie(null, "Batman Begins", "Description 2", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018);
+        var movie = new MovieInfo(null, "Batman Begins", "Description 2", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018);
 
         //when
         String movieId = "abc";

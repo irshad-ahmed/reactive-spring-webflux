@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document
-public class Movie {
+public class MovieInfo {
     @Id
     private String movieId;
     @NotBlank(message = "Movie name must be provided")

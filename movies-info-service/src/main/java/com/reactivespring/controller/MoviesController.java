@@ -1,9 +1,8 @@
 package com.reactivespring.controller;
 
-import com.reactivespring.domain.Movie;
+import com.reactivespring.domain.MovieInfo;
 import com.reactivespring.service.MovieService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +15,7 @@ import javax.validation.Valid;
 @RequestMapping("/v1/movies")
 @Slf4j
 public class MoviesController {
-    @Autowired
+
     MovieService movieService;
 
     public MoviesController(MovieService movieService) {
@@ -25,13 +24,13 @@ public class MoviesController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<Movie> addMovie(@RequestBody @Valid Movie movie) {
+    public Mono<MovieInfo> addMovie(@RequestBody @Valid MovieInfo movie) {
         return movieService.addMovie(movie).log();
     }
 
     @GetMapping
-    public Flux<Movie> getAllMovies(@RequestParam(value = "year", required = false) Integer year,
-                                    @RequestParam(value = "name", required = false) String name) {
+    public Flux<MovieInfo> getAllMovies(@RequestParam(value = "year", required = false) Integer year,
+                                        @RequestParam(value = "name", required = false) String name) {
         log.info("Year is : {}", year);
         if (name != null) {
             return movieService.getMoviesByName(name);
@@ -43,7 +42,7 @@ public class MoviesController {
     }
 
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<Movie>> getMovieById(@PathVariable String id) {
+    public Mono<ResponseEntity<MovieInfo>> getMovieById(@PathVariable String id) {
         return movieService.getMovieById(id)
                 .map(movie -> {
                     return ResponseEntity.ok().body(movie);
@@ -54,7 +53,7 @@ public class MoviesController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Mono<ResponseEntity<Movie>> updateMovieById(@PathVariable String id, @RequestBody Movie newMovie) {
+    public Mono<ResponseEntity<MovieInfo>> updateMovieById(@PathVariable String id, @RequestBody MovieInfo newMovie) {
         return movieService.updateMovie(id, newMovie)
                 .map(movie -> {
                     return ResponseEntity.ok().body(movie);

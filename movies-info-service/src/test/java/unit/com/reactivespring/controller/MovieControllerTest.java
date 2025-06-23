@@ -1,6 +1,6 @@
 package com.reactivespring.controller;
 
-import com.reactivespring.domain.Movie;
+import com.reactivespring.domain.MovieInfo;
 import com.reactivespring.service.MovieService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,16 +34,16 @@ public class MovieControllerTest {
 
         when(movieServiceMock.getAllMovies())
                 .thenReturn(Flux.just(
-                        new Movie("1", "Batman", "Description 1", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018),
-                        new Movie("2", "Mission Impossible", "Description 1", List.of("Actor 1", "Actor 2"), LocalDate.of(2025, 10, 1), 2025),
-                        new Movie("3", "Harry Potter", "Description 1", List.of("Actor 1", "Actor 2"), LocalDate.of(2008, 10, 1), 2008)
+                        new MovieInfo("1", "Batman", "Description 1", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018),
+                        new MovieInfo("2", "Mission Impossible", "Description 1", List.of("Actor 1", "Actor 2"), LocalDate.of(2025, 10, 1), 2025),
+                        new MovieInfo("3", "Harry Potter", "Description 1", List.of("Actor 1", "Actor 2"), LocalDate.of(2008, 10, 1), 2008)
                 ));
 
         webTestClient.get().uri(MOVIES_URI)
                 .exchange()
                 .expectStatus()
                 .is2xxSuccessful()
-                .expectBodyList(Movie.class)
+                .expectBodyList(MovieInfo.class)
                 .hasSize(3);
     }
 
@@ -53,7 +53,7 @@ public class MovieControllerTest {
         String movieId = "1";
         when(movieServiceMock.getMovieById(isA(String.class)))
                 .thenReturn(Mono.just(
-                        new Movie("1", "Batman", "Description 1", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018)
+                        new MovieInfo("1", "Batman", "Description 1", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018)
                 ));
         webTestClient.get().uri(MOVIES_URI+"/{id}",movieId)
                 .exchange()
@@ -67,10 +67,10 @@ public class MovieControllerTest {
     @Test
     public void addMovie() {
         //given
-        var movie = new Movie(null, "Batman Begins", "Description 2", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018);
-        when(movieServiceMock.addMovie(isA(Movie.class)))
+        var movie = new MovieInfo(null, "Batman Begins", "Description 2", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018);
+        when(movieServiceMock.addMovie(isA(MovieInfo.class)))
                 .thenReturn(Mono.just(
-                        new Movie("123", "Batman Begins", "Description 2", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018)
+                        new MovieInfo("123", "Batman Begins", "Description 2", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018)
                 ));
 
         //when
@@ -79,7 +79,7 @@ public class MovieControllerTest {
                 .exchange()
                 .expectStatus()
                 .isCreated()
-                .expectBody(Movie.class)
+                .expectBody(MovieInfo.class)
                 .consumeWith(response -> {
                     var savedMovie = response.getResponseBody();
                     assert savedMovie != null;
@@ -94,10 +94,10 @@ public class MovieControllerTest {
     @Test
     public void updateMovie() {
         //given
-        var movie = new Movie(null, "Batman Begins", "Description 2", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018);
-        when(movieServiceMock.updateMovie(isA(String.class), isA(Movie.class)))
+        var movie = new MovieInfo(null, "Batman Begins", "Description 2", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018);
+        when(movieServiceMock.updateMovie(isA(String.class), isA(MovieInfo.class)))
                 .thenReturn(Mono.just(
-                        new Movie("123", "Batman Begins", "Description 2", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018)
+                        new MovieInfo("123", "Batman Begins", "Description 2", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018)
                 ));
         //when
         String movieId="123";
@@ -106,7 +106,7 @@ public class MovieControllerTest {
                 .exchange()
                 .expectStatus()
                 .is2xxSuccessful()
-                .expectBody(Movie.class)
+                .expectBody(MovieInfo.class)
                 .consumeWith(response -> {
                     var savedMovie = response.getResponseBody();
                     assert savedMovie != null;
@@ -133,7 +133,7 @@ public class MovieControllerTest {
     @Test
     public void whenAddingMovieMandatoryFieldsNeedsToBePresent() {
         //given
-        var movie = new Movie(null, "", "Description 2", List.of(""), LocalDate.of(2018, 10, 1), -2018);
+        var movie = new MovieInfo(null, "", "Description 2", List.of(""), LocalDate.of(2018, 10, 1), -2018);
         //when
         webTestClient.post().uri(MOVIES_URI)
                 .bodyValue(movie)

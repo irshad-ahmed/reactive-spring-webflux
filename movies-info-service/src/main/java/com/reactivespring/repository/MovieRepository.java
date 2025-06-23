@@ -1,12 +1,11 @@
 package com.reactivespring.repository;
 
-import com.reactivespring.domain.Movie;
+import com.reactivespring.domain.MovieInfo;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
-public interface MovieRepository extends ReactiveMongoRepository<Movie,String> {
+public interface MovieRepository extends ReactiveMongoRepository<MovieInfo,String> {
 
-    Flux<Movie> findByYear(Integer year);
-    Flux<Movie> findByName(String name);
+    Flux<MovieInfo> findByYear(Integer year);
+    Flux<MovieInfo> findByName(String name);
 }
