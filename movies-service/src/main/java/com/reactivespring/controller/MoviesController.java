@@ -34,14 +34,6 @@ public class MoviesController {
                     .collectList()
                     .map(reviews -> new Movie(movieInfo, reviews));
         });
-
-//        Mono<MovieInfo> movieInfoMono = moviesInfoRestClient.retrieveMovieInfo(id);
-//
-//                    return reviewsRestClient.retrieveReviews(id)
-//                            .collectList()
-//                            .map(reviews -> new Movie(null, reviews));
-
-
     }
 
 }
