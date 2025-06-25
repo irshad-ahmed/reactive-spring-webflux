@@ -14,7 +14,7 @@ import reactor.core.publisher.Sinks;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/v1/movie-infos")
+@RequestMapping("/v1/movieinfos")
 @Slf4j
 public class MoviesController {
 

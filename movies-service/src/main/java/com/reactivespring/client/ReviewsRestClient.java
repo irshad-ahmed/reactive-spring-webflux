@@ -21,7 +21,7 @@ public class ReviewsRestClient {
 
     private WebClient webClient;
 
-    @Value("${restClient.moviesReviewUrl}")
+    @Value("${restClient.reviewsUrl}")
     private String moviesReviewUrl;
 
     public ReviewsRestClient(WebClient webClient) {
