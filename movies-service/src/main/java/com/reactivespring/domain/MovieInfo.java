@@ -21,6 +21,8 @@ public class MovieInfo {
     @NotBlank(message = "Movie name must be provided")
     private String name;
 
+    private String description;
+
     private List<@NotBlank(message = "cast must be present") String> cast;
 
     private LocalDate releaseDate;

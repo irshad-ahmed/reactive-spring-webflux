@@ -2,7 +2,7 @@ spring:
   profiles:
     active: local
 restClient:
-  moviesInfoServiceUrl: http://localhost:8080/v1/movies/{movieId}
+  moviesInfoServiceUrl: http://localhost:8080/v1/movie-infos
   moviesReviewUrl: http://localhost:8081/v1/reviews
 server:
   port: 8082

@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.util.UriComponentsBuilder;
+import reactor.test.StepVerifier;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -21,7 +22,7 @@ import java.util.List;
 @AutoConfigureWebTestClient
 public class MovieControllerIntgTest {
 
-    public static final String MOVIES_URI = "/v1/movies";
+    public static final String MOVIES_URI = "/v1/movie-infos";
     @Autowired
     MovieRepository movieRepository;
 
@@ -193,6 +194,44 @@ public class MovieControllerIntgTest {
                 .exchange()
                 .expectStatus()
                 .isNoContent();
+
+    }
+
+    @Test
+    public void getAllMovieStream() {
+        //given
+        //var movie = new Movie(null, "Batman Begins", "Description 2", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1));
+//given
+        var movie = new MovieInfo(null, "Batman Begins", "Description 2", List.of("Christian Bale", "Actor 2"), LocalDate.of(2018, 10, 1), 2018);
+
+        //when
+        webTestClient.post().uri(MOVIES_URI)
+                .bodyValue(movie)
+                .exchange()
+                .expectStatus()
+                .isCreated()
+                .expectBody(MovieInfo.class)
+                .consumeWith(response -> {
+                    var savedMovie = response.getResponseBody();
+                    assert savedMovie != null;
+                    assert savedMovie.getMovieId() != null;
+                    assert savedMovie.getName().equals("Batman Begins");
+                    assert savedMovie.getDescription().equals("Description 2");
+                    assert savedMovie.getCast().contains("Christian Bale");
+                    assert savedMovie.getYear().equals(2018);
+                });
+        //when
+        var moviesStreamFlux = webTestClient.get().uri(MOVIES_URI + "/stream")
+                .exchange()
+                .expectStatus()
+                .is2xxSuccessful()
+                .returnResult(MovieInfo.class)
+                .getResponseBody();
+        //then
+        StepVerifier.create(moviesStreamFlux).assertNext(movieInfo -> {
+                    assert movieInfo.getMovieId() != null;
+                })
+                .thenCancel().verify();
 
     }
 

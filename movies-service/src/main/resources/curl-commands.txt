@@ -1,14 +1,17 @@
 POST-CREATE-MOVIE-INFO
 -----------------------
 curl -i \
--d '{"movieId":1, "name": "Batman Begins", "year":2005,"cast":["Christian Bale", "Michael Cane"],"releaseDate": "2005-06-15"}' \
+-d '{"movieId":2, "name": "Batman Begins 2", "year":2008,"cast":["Christian Bale", "Michael Cane"],"releaseDate": "2005-06-15"}' \
 -H "Content-Type: application/json" \
--X POST http://localhost:8080/v1/movies
+-X POST http://localhost:8080/v1/movie-infos
 
 curl -i \
 -d '{"movieId":3, "name": "The Dark Knight", "year":2008,"cast":["Christian Bale", "HeathLedger"],"releaseDate": "2008-07-18"}' \
 -H "Content-Type: application/json" \
 -X POST http://localhost:8080/v1/movies
+
+curl -i \
+-X GET http://localhost:8080/v1/movie-infos/stream
 
 
 POST-REVIEW
